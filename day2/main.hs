@@ -40,7 +40,7 @@ materialPoint opt = case opt of
   S -> 3
 
 parseOpt :: String -> [OPT]
-parseOpt s = map read $ splitOn " " s
+parseOpt = (map read) .  splitOn " "
 
 changeOpt :: [OPT] -> [OPT]
 changeOpt [d, R] = [d, prevElement d]
@@ -58,7 +58,8 @@ parseMatch [opt1, opt2] =
 main :: IO ()
 main = do
   file <- readFile "input.txt"
-  let input = map (parseMatch . parseOpt) $ lines file
-      input2 = map (parseMatch . changeOpt . parseOpt) $ lines file
-  putStrLn $ "Sum scores: " ++ (show $ sum input)
-  putStrLn $ "Sum realistic score: " ++ (show $ sum input2)
+  let input = lines file
+      result1 = map (parseMatch . parseOpt) input
+      result2 = map (parseMatch . changeOpt . parseOpt) input
+  putStrLn $ "Sum scores: " ++ (show $ sum result1)
+  putStrLn $ "Sum realistic score: " ++ (show $ sum result2)
