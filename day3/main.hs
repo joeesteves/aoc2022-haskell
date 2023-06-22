@@ -1,19 +1,19 @@
 module Main where
 import Data.Set (fromList, intersection, toList)
-import Data.List.Split (splitEvery)
+import Data.List.Split (chunksOf)
+import Data.List (intersect)
 
-splitStringOnMiddle :: String -> (String, String)
+splitStringOnMiddle :: String -> [String]
 splitStringOnMiddle str =
   let len = length str
       mid = len `div` 2
-  in splitAt mid str
+      (str1, str2) = splitAt mid str
+    in [str1, str2]
 
-findRepeatedChar :: (String, String) -> Char
-findRepeatedChar (str1, str2) =
-  let set1 = fromList str1
-      set2 = fromList str2
-      myIntersection = intersection set1 set2
-  in head $ toList myIntersection
+findRepeatedChar :: [String] -> Char
+findRepeatedChar strings =
+  let intersectionResult = foldr1 intersect strings
+  in head intersectionResult
 
 charValue :: Char -> Int
 charValue char =
@@ -26,5 +26,6 @@ main :: IO ()
 main = do
   file <- readFile "input.txt"
   let input = lines file
-  let input2 = splitEvery 3 input
+  let input2 = chunksOf 3 input
   print $ sum $ map (charValue . findRepeatedChar . splitStringOnMiddle) input
+  print $ sum $ map (charValue . findRepeatedChar) input2
